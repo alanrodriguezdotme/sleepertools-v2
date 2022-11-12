@@ -10,11 +10,11 @@ function MyApp({ Component, pageProps }) {
   const [theme, setTheme] = useState(createTheme(mainTheme));
 
   useEffect(() => {
-    // if (window.matchMedia("(prefers-color-scheme: dark)")) {
-    //   setColorMode("dark");
-    // } else {
-    //   setColorMode("light");
-    // }
+    if (window.matchMedia("(prefers-color-scheme: dark)")) {
+      setColorMode("dark");
+    } else {
+      setColorMode("light");
+    }
   }, []);
 
   useEffect(() => {
