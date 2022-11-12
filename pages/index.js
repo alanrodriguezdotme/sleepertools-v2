@@ -87,14 +87,25 @@ export default function Home({ colorMode, setColorMode }) {
           </div>
         )}
         <div className={styles.footer}>
-          Created by{" "}
-          <Link
-            href="https://alanrodriguez.me"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Alan Rodriguez
-          </Link>
+          <div>
+            Created by{" "}
+            <Link
+              href="https://alanrodriguez.me"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Alan Rodriguez
+            </Link>
+          </div>
+          <div>
+            <Link
+              href="https://www.buymeacoffee.com/alanrodriguez"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Dig this website? ☕️
+            </Link>
+          </div>
         </div>
       </main>
     </div>
