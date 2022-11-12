@@ -11,13 +11,37 @@ import {
   red,
 } from "@mui/material/colors";
 
-export const lightTheme = {
+export const mainTheme = {
   palette: {
+    background: {
+      light: grey[200],
+      main: grey[500],
+      dark: grey[900],
+    },
+    text: {
+      light: grey[800],
+      main: grey[500],
+      dark: "#fff",
+    },
     appbar: {
-      main: grey[200],
+      light: indigo[200],
+      main: indigo[500],
+      dark: indigo[900],
     },
     usersBar: {
-      main: grey[400],
+      light: indigo[100],
+      main: indigo[200],
+      dark: indigo[900],
+    },
+    user: {
+      light: "#fff",
+      main: grey[500],
+      dark: grey[900],
+    },
+    pick: {
+      light: "#fff",
+      main: grey[500],
+      dark: grey[800],
     },
     primary: {
       main: indigo[500],

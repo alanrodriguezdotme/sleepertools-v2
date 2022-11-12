@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   AppBar,
+  Box,
   Card,
   FormControl,
   Grid,
@@ -13,7 +14,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import * as playerData from "../api/players.json";
 import styles from "../../styles/LeagueView.module.scss";
 import { sortPicks, sortPlayers } from "../../utils/helpers";
@@ -24,13 +24,15 @@ import {
   getTradedPicks,
 } from "../../utils/sleeper-api";
 import _ from "lodash";
+import { ArrowBack, DarkMode, LightMode } from "@mui/icons-material";
 
-export default function LeagueView() {
+export default function LeagueView({ colorMode, setColorMode }) {
   const [rosters, setRosters] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
   const [sortBy, setSortBy] = useState("");
   const router = useRouter();
   const theme = useTheme();
+  const { mode } = theme.palette;
   const { id } = router.query;
 
   useEffect(() => {
@@ -153,21 +155,39 @@ export default function LeagueView() {
 
   return (
     rosters && (
-      <div className={styles.container}>
-        <AppBar color="appbar">
+      <div
+        className={styles.container}
+        style={{
+          backgroundColor: theme.palette.background[mode],
+        }}
+      >
+        <AppBar
+          color="appbar"
+          sx={{ backgroundColor: theme.palette.appbar[mode] }}
+        >
           <Toolbar>
             <IconButton
-              color="primary"
-              size="large"
+              color="text"
+              sx={{ color: theme.palette.text[mode] }}
               edge="start"
               onClick={() => router.push("/")}
             >
-              <ArrowBackIcon fontSize="large" />
+              <ArrowBack />
             </IconButton>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
               {leagueInfo.name}
             </Typography>
-            <FormControl sx={{ minWidth: 120 }}>
+            <IconButton
+              color="text"
+              sx={{ color: theme.palette.text[mode] }}
+              edge="start"
+              onClick={() =>
+                setColorMode(colorMode === "dark" ? "light" : "dark")
+              }
+            >
+              {colorMode === "dark" ? <LightMode /> : <DarkMode />}
+            </IconButton>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
               <InputLabel id="sort-by-label">Sort teams by</InputLabel>
               <Select
                 labelId="sort-by-label"
@@ -187,9 +207,11 @@ export default function LeagueView() {
           </Toolbar>
         </AppBar>
         <div className={styles.content}>
-          <div
+          <Box
             className={styles.usersContainer}
-            style={{ backgroundColor: theme.palette.usersBar.main }}
+            style={{
+              backgroundColor: theme.palette.usersBar[mode],
+            }}
           >
             <Grid container spacing={1} className={styles.users}>
               {rosters.map((team) => (
@@ -199,7 +221,15 @@ export default function LeagueView() {
                   key={team.owner_id}
                   sx={{ position: "static" }}
                 >
-                  <Card xs={1} variant="outlined" className={styles.user}>
+                  <Card
+                    xs={1}
+                    variant="outlined"
+                    className={styles.user}
+                    sx={{
+                      backgroundColor: theme.palette.user[mode],
+                      color: theme.palette.text[mode],
+                    }}
+                  >
                     <div className={styles.username}>
                       {team.user.display_name}
                     </div>
@@ -210,7 +240,7 @@ export default function LeagueView() {
                 </Grid>
               ))}
             </Grid>
-          </div>
+          </Box>
           {leagueInfo.settings.type === 2 && (
             <div className={styles.picksContainer}>
               <Grid container spacing={1} className={styles.picks}>
@@ -226,7 +256,14 @@ export default function LeagueView() {
                   >
                     {team.picks?.map((pick, i) => (
                       <Grid item xs={1} key={`pick-${i}`}>
-                        <Card xs={1} className={styles.pick}>
+                        <Card
+                          xs={1}
+                          className={styles.pick}
+                          sx={{
+                            backgroundColor: theme.palette.pick[mode],
+                            color: theme.palette.text[mode],
+                          }}
+                        >
                           <div className={styles.value}>
                             {pick.season} Round {pick.round}
                           </div>
@@ -259,7 +296,7 @@ export default function LeagueView() {
                         xs={1}
                         className={styles.player}
                         sx={{
-                          backgroundColor: theme.palette[player.position].light,
+                          backgroundColor: theme.palette[player.position][mode],
                         }}
                       >
                         <div className={styles.name}>

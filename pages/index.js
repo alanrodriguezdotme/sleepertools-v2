@@ -6,16 +6,18 @@ import {
   MenuItem,
   Select,
   TextField,
+  useTheme,
 } from "@mui/material";
 import { useState } from "react";
 import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import { getUserInfo, getUserLeagues } from "../utils/sleeper-api";
 
-export default function Home() {
+export default function Home({ colorMode, setColorMode }) {
   const [sleeperUsername, setSleeperUsername] = useState("");
   const [sleeperLeagues, setSleeperLeagues] = useState(null);
   const [selectedLeague, setSelectedLeague] = useState(null);
+  const theme = useTheme();
   const router = useRouter();
 
   function handleSignIn() {
@@ -31,7 +33,13 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{
+        backgroundColor: theme.palette.background[colorMode],
+        color: theme.palette.text[colorMode],
+      }}
+    >
       <main className={styles.main}>
         {/* <h1>Sleeper League View</h1> */}
         {sleeperLeagues === null ? (
