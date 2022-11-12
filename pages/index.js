@@ -1,7 +1,8 @@
 import {
   Button,
-  Grid,
+  FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   TextField,
@@ -26,34 +27,34 @@ export default function Home() {
   }
 
   function handleViewLeagueClick() {
-    router.push(`/leagues/${selectedLeague.league_id}`);
+    router.push(`/league/${selectedLeague.league_id}`);
   }
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <Grid container sx={{ display: "flex", justifyContent: "center" }}>
-          {sleeperLeagues === null ? (
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
+        {/* <h1>Sleeper League View</h1> */}
+        {sleeperLeagues === null ? (
+          <div className={styles.formGroup}>
+            <TextField
+              id="sleeper-username"
+              label="Enter your Sleeper username"
+              value={sleeperUsername}
+              onChange={(e) => setSleeperUsername(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSignIn();
+                  e.preventDefault();
+                }
               }}
-            >
-              <TextField
-                id="sleeper-username"
-                label="Enter your Sleeper username"
-                value={sleeperUsername}
-                onChange={(e) => setSleeperUsername(e.target.value)}
-              />
-              <Button variant="contained" onClick={handleSignIn}>
-                Sign in
-              </Button>
-            </Grid>
-          ) : (
-            <Grid item>
+            />
+            <Button variant="contained" onClick={handleSignIn}>
+              View your leagues
+            </Button>
+          </div>
+        ) : (
+          <div className={styles.formGroup}>
+            <FormControl>
               <InputLabel id="leagueDropdownLabel">
                 Select one of your leagues
               </InputLabel>
@@ -71,12 +72,22 @@ export default function Home() {
                   </MenuItem>
                 ))}
               </Select>
-              <Button variant="contained" onClick={handleViewLeagueClick}>
-                View league
-              </Button>
-            </Grid>
-          )}
-        </Grid>
+            </FormControl>
+            <Button variant="contained" onClick={handleViewLeagueClick}>
+              View league
+            </Button>
+          </div>
+        )}
+        <div className={styles.footer}>
+          Created by{" "}
+          <Link
+            href="https://alanrodriguez.me"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Alan Rodriguez
+          </Link>
+        </div>
       </main>
     </div>
   );

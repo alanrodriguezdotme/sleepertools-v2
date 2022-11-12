@@ -3,8 +3,12 @@ import { useRouter } from "next/router";
 import {
   AppBar,
   Card,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Toolbar,
   Typography,
   useTheme,
@@ -19,10 +23,12 @@ import {
   getRosters,
   getTradedPicks,
 } from "../../utils/sleeper-api";
+import _ from "lodash";
 
 export default function LeagueView() {
   const [rosters, setRosters] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
+  const [sortBy, setSortBy] = useState("");
   const router = useRouter();
   const theme = useTheme();
   const { id } = router.query;
@@ -50,6 +56,50 @@ export default function LeagueView() {
       });
     }
   }, [id]);
+
+  useEffect(() => {
+    if (rosters) {
+      let sortedRosters = rosters;
+
+      switch (sortBy) {
+        case "default":
+          sortedRosters = _.orderBy(sortedRosters, (team) => team.roster_id, [
+            "asc",
+          ]);
+          break;
+        case "wins-asc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.wins,
+            ["asc"]
+          );
+          break;
+        case "wins-desc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.wins,
+            ["desc"]
+          );
+          break;
+        case "fpts-asc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.fpts,
+            ["asc"]
+          );
+          break;
+        case "fpts-desc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.fpts,
+            ["desc"]
+          );
+          break;
+      }
+      console.log({ sortedRosters });
+      setRosters([...sortedRosters]);
+    }
+  }, [sortBy]);
 
   function addPlayers(teams) {
     let updatedRosters = [];
@@ -114,7 +164,26 @@ export default function LeagueView() {
             >
               <ArrowBackIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6">{leagueInfo.name}</Typography>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              {leagueInfo.name}
+            </Typography>
+            <FormControl sx={{ minWidth: 120 }}>
+              <InputLabel id="sort-by-label">Sort teams by</InputLabel>
+              <Select
+                labelId="sort-by-label"
+                id="sort-by"
+                value={sortBy}
+                defaultValue="default"
+                label="Sort teams by"
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <MenuItem value="default">Default</MenuItem>
+                <MenuItem value="wins-asc">Wins, ascending</MenuItem>
+                <MenuItem value="wins-desc">Wins, descending</MenuItem>
+                <MenuItem value="fpts-asc">Points for, ascending</MenuItem>
+                <MenuItem value="fpts-desc">Points for, descending</MenuItem>
+              </Select>
+            </FormControl>
           </Toolbar>
         </AppBar>
         <div className={styles.content}>
@@ -128,7 +197,12 @@ export default function LeagueView() {
                   sx={{ position: "static" }}
                 >
                   <Card xs={1} className={styles.user}>
-                    {team.user.display_name}
+                    <div className={styles.username}>
+                      {team.user.display_name}
+                    </div>
+                    <div className={styles.userInfo}>
+                      {`${team.settings.wins}/${team.settings.losses} - ${team.settings.fpts} pts`}
+                    </div>
                   </Card>
                 </Grid>
               ))}

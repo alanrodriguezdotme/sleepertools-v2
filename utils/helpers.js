@@ -46,7 +46,6 @@ export function sortPicks(leagueInfo, trades) {
       ) {
         /** Make sure it belongs to the right team */
         if (tradedPicks[t].roster_id === allPicks[j].roster_id) {
-          console.log({ original: allPicks[j], traded: tradedPicks[t] });
           allPicks[j].owner_id = tradedPicks[t].owner_id;
         }
       }
