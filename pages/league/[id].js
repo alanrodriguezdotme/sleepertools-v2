@@ -187,7 +187,10 @@ export default function LeagueView() {
           </Toolbar>
         </AppBar>
         <div className={styles.content}>
-          <div className={styles.usersContainer}>
+          <div
+            className={styles.usersContainer}
+            style={{ backgroundColor: theme.palette.usersBar.main }}
+          >
             <Grid container spacing={1} className={styles.users}>
               {rosters.map((team) => (
                 <Grid
@@ -196,12 +199,12 @@ export default function LeagueView() {
                   key={team.owner_id}
                   sx={{ position: "static" }}
                 >
-                  <Card xs={1} className={styles.user}>
+                  <Card xs={1} variant="outlined" className={styles.user}>
                     <div className={styles.username}>
                       {team.user.display_name}
                     </div>
                     <div className={styles.userInfo}>
-                      {`${team.settings.wins}/${team.settings.losses} - ${team.settings.fpts} pts`}
+                      {`${team.settings.wins}-${team.settings.losses} ${team.settings.fpts}pts`}
                     </div>
                   </Card>
                 </Grid>

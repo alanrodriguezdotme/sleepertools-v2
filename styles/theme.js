@@ -16,6 +16,9 @@ export const lightTheme = {
     appbar: {
       main: grey[200],
     },
+    usersBar: {
+      main: grey[400],
+    },
     primary: {
       main: indigo[500],
     },

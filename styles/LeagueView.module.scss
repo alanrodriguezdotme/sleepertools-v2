@@ -21,11 +21,9 @@ div.usersContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: gray;
   position: sticky;
   top: 0;
   padding: 10px;
-  background-color: lightgrey;
 }
 
 div.users {
@@ -44,8 +42,11 @@ div.user {
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  font-weight: 600;
   white-space: nowrap;
+
+  .username {
+    font-weight: 600;
+  }
 }
 
 div.picksContainer {
