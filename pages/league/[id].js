@@ -224,7 +224,7 @@ export default function LeagueView() {
                     {team.picks?.map((pick, i) => (
                       <Grid item xs={1} key={`pick-${i}`}>
                         <Card xs={1} className={styles.pick}>
-                          <div className={styles.pickValue}>
+                          <div className={styles.value}>
                             {pick.season} Round {pick.round}
                           </div>
                           <div className={styles.originalOwner}>

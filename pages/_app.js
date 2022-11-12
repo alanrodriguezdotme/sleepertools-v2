@@ -10,8 +10,12 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>Sleeper Tools</title>
-        <meta name="description" content="Tools for Sleeper" />
+        <title>Sleeper Draftboard View</title>
+        <link rel="shortcut icon" href="/football.png" />
+        <meta
+          name="description"
+          content="Draftboard view for Sleeper leagues"
+        />
       </Head>
       <Component {...pageProps} />
     </ThemeProvider>
