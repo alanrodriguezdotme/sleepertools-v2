@@ -43,6 +43,11 @@ export const mainTheme = {
       main: grey[500],
       dark: grey[800],
     },
+    pickSubdued: {
+      light: grey[100],
+      main: grey[500],
+      dark: grey[900],
+    },
     primary: {
       main: indigo[500],
     },

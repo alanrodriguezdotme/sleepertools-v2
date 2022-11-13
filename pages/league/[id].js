@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import * as playerData from "../api/players.json";
 import styles from "../../styles/LeagueView.module.scss";
-import { sortPicks, sortPlayers } from "../../utils/helpers";
+import { currentYear, sortPicks, sortPlayers } from "../../utils/helpers";
 import {
   getLeagueInfo,
   getLeagueUsers,
@@ -25,12 +25,20 @@ import {
   getTradedPicks,
 } from "../../utils/sleeper-api";
 import _ from "lodash";
-import { ArrowBack, DarkMode, LightMode } from "@mui/icons-material";
+import {
+  ArrowBack,
+  DarkMode,
+  GridOff,
+  GridOn,
+  LightMode,
+} from "@mui/icons-material";
 
 export default function LeagueView({ colorMode, setColorMode }) {
   const [rosters, setRosters] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
+  const [allPicks, setAllPicks] = useState(null);
   const [sortBy, setSortBy] = useState("");
+  const [draftView, setDraftView] = useState(false);
   const router = useRouter();
   const theme = useTheme();
   const { mode } = theme.palette;
@@ -48,7 +56,8 @@ export default function LeagueView({ colorMode, setColorMode }) {
             updatedRosters = addUsers(updatedRosters, users);
             if (info?.settings?.type === 2 && rosters) {
               getTradedPicks(id, (picks) => {
-                const updatedPicks = sortPicks(info, picks);
+                const updatedPicks = sortPicks(info, picks, updatedRosters);
+                setAllPicks(updatedPicks);
                 setRosters(addPicks(updatedRosters, updatedPicks));
               });
             } else {
@@ -59,6 +68,12 @@ export default function LeagueView({ colorMode, setColorMode }) {
       });
     }
   }, [id]);
+
+  useEffect(() => {
+    if (rosters) {
+      setRosters(addPicks(rosters, allPicks));
+    }
+  }, [draftView]);
 
   useEffect(() => {
     if (rosters) {
@@ -131,154 +146,127 @@ export default function LeagueView({ colorMode, setColorMode }) {
   }
 
   function addPicks(teams, picks) {
-    let updatedTeams = teams;
+    let updatedTeams = teams.map((t) => {
+      t.picks = [];
+      return t;
+    });
     picks.forEach((pick) => {
-      let updatedPick = {
-        ...pick,
-        original_owner: teams[pick.roster_id - 1].user,
-        previous_owner:
-          teams[
-            pick.previous_owner_id
-              ? pick.previous_owner_id - 1
-              : pick.roster_id - 1
-          ].user,
-        current_owner: teams[pick.owner_id - 1].user,
-      };
-
-      if (!updatedTeams[pick.owner_id - 1].picks) {
-        updatedTeams[pick.owner_id - 1].picks = [updatedPick];
-      } else {
-        updatedTeams[pick.owner_id - 1].picks.push(updatedPick);
-      }
+      updatedTeams.forEach((team) => {
+        if (draftView) {
+          if (team.roster_id === pick.roster_id) {
+            team.picks.push(pick);
+          }
+        } else {
+          if (team.roster_id === pick.owner_id) {
+            team.picks.push(pick);
+          }
+        }
+      });
     });
     return updatedTeams;
   }
 
-  return (
-    rosters && (
-      <div
-        className={styles.container}
-        style={{
-          backgroundColor: theme.palette.background[mode],
-        }}
+  return rosters ? (
+    <div
+      className={styles.container}
+      style={{
+        backgroundColor: theme.palette.background[mode],
+      }}
+    >
+      <AppBar
+        className={styles.appbar}
+        color="appbar"
+        sx={{ backgroundColor: theme.palette.appbar[mode] }}
       >
-        <AppBar
-          className={styles.appbar}
-          color="appbar"
-          sx={{ backgroundColor: theme.palette.appbar[mode] }}
-        >
-          <Toolbar>
-            <IconButton
-              color="text"
-              sx={{ color: theme.palette.text[mode] }}
-              edge="start"
-              onClick={() => router.push("/")}
-            >
-              <ArrowBack />
-            </IconButton>
-            <Typography
-              variant="h6"
-              sx={{ flexGrow: 1 }}
-              className={styles.leagueName}
-            >
-              {leagueInfo.name}
-            </Typography>
-            <IconButton
-              color="text"
-              sx={{ color: theme.palette.text[mode] }}
-              edge="start"
-              onClick={() =>
-                setColorMode(colorMode === "dark" ? "light" : "dark")
-              }
-            >
-              {colorMode === "dark" ? <LightMode /> : <DarkMode />}
-            </IconButton>
-            <FormControl size="small" sx={{ minWidth: 150 }}>
-              <InputLabel id="sort-by-label">Sort teams by</InputLabel>
-              <Select
-                labelId="sort-by-label"
-                id="sort-by"
-                value={sortBy}
-                defaultValue="default"
-                label="Sort teams by"
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <MenuItem value="default">Default</MenuItem>
-                <MenuItem value="wins-asc">Wins, ascending</MenuItem>
-                <MenuItem value="wins-desc">Wins, descending</MenuItem>
-                <MenuItem value="fpts-asc">Points for, ascending</MenuItem>
-                <MenuItem value="fpts-desc">Points for, descending</MenuItem>
-              </Select>
-            </FormControl>
-          </Toolbar>
-        </AppBar>
-        <div className={styles.content}>
-          <Box
-            className={styles.usersContainer}
-            style={{
-              backgroundColor: theme.palette.usersBar[mode],
-            }}
+        <Toolbar>
+          <IconButton
+            color="text"
+            sx={{ color: theme.palette.text[mode] }}
+            edge="start"
+            onClick={() => router.push("/")}
           >
-            <Grid container className={styles.users}>
-              {rosters.map((team) => (
-                <Grid item xs={1} key={team.owner_id}>
-                  <Card
-                    xs={1}
-                    className={styles.user}
-                    sx={{
-                      backgroundColor: theme.palette.user[mode],
-                      color: theme.palette.text[mode],
-                    }}
-                  >
-                    <div className={styles.username}>
-                      {team.user.display_name}
-                    </div>
-                    <div className={styles.userInfo}>
-                      {`${team.settings.wins}-${team.settings.losses} ${team.settings.fpts}pts`}
-                    </div>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-          {leagueInfo.settings.type === 2 && (
-            <div className={styles.picksContainer}>
-              <Grid container className={styles.picks}>
-                {rosters.map((team) => (
-                  <Grid
-                    key={team.owner_id}
-                    item
-                    container
-                    xs={1}
-                    direction="column"
-                    className={styles.team}
-                  >
-                    {team.picks?.map((pick, i) => (
-                      <Grid item xs={1} key={`pick-${i}`}>
-                        <Card
-                          xs={1}
-                          className={styles.pick}
-                          sx={{
-                            backgroundColor: theme.palette.pick[mode],
-                            color: theme.palette.text[mode],
-                          }}
-                        >
-                          <div className={styles.value}>
-                            {pick.season} Round {pick.round}
-                          </div>
-                          <div className={styles.originalOwner}>
-                            {pick.original_owner.display_name}
-                          </div>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
-                ))}
+            <ArrowBack />
+          </IconButton>
+          <Typography
+            variant="h6"
+            sx={{ flexGrow: 1 }}
+            className={styles.leagueName}
+          >
+            {leagueInfo.name}
+          </Typography>
+          <Tooltip title="Toggle draft view">
+            <IconButton
+              color="text"
+              size="large"
+              sx={{ color: theme.palette.text[mode] }}
+              edge="start"
+              onClick={() => setDraftView(!draftView)}
+            >
+              {draftView ? <GridOff /> : <GridOn />}
+            </IconButton>
+          </Tooltip>
+          <IconButton
+            color="text"
+            size="large"
+            sx={{ color: theme.palette.text[mode] }}
+            edge="start"
+            onClick={() =>
+              setColorMode(colorMode === "dark" ? "light" : "dark")
+            }
+          >
+            {colorMode === "dark" ? <LightMode /> : <DarkMode />}
+          </IconButton>
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="sort-by-label">Sort teams by</InputLabel>
+            <Select
+              labelId="sort-by-label"
+              id="sort-by"
+              value={sortBy}
+              defaultValue="default"
+              label="Sort teams by"
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <MenuItem value="default">Default</MenuItem>
+              <MenuItem value="wins-asc">Wins, ascending</MenuItem>
+              <MenuItem value="wins-desc">Wins, descending</MenuItem>
+              <MenuItem value="fpts-asc">Points for, ascending</MenuItem>
+              <MenuItem value="fpts-desc">Points for, descending</MenuItem>
+            </Select>
+          </FormControl>
+        </Toolbar>
+      </AppBar>
+      <div className={styles.content}>
+        <Box
+          className={styles.usersContainer}
+          style={{
+            backgroundColor: theme.palette.usersBar[mode],
+          }}
+        >
+          <Grid container className={styles.users}>
+            {rosters.map((team) => (
+              <Grid item xs={1} key={team.owner_id}>
+                <Card
+                  xs={1}
+                  className={styles.user}
+                  sx={{
+                    backgroundColor: theme.palette.user[mode],
+                    color: theme.palette.text[mode],
+                  }}
+                >
+                  <div className={styles.username}>
+                    {team.user.display_name}
+                  </div>
+                  <div className={styles.userInfo}>
+                    {`${team.settings.wins}-${team.settings.losses} ${team.settings.fpts}pts`}
+                  </div>
+                </Card>
               </Grid>
-            </div>
-          )}
-          <div className={styles.rostersContainer}>
-            <Grid container className={styles.rosters}>
+            ))}
+          </Grid>
+        </Box>
+        {leagueInfo.settings.type === 2 && (
+          <div className={styles.picksContainer}>
+            <Grid container className={styles.picks}>
               {rosters.map((team) => (
                 <Grid
                   key={team.owner_id}
@@ -288,39 +276,26 @@ export default function LeagueView({ colorMode, setColorMode }) {
                   direction="column"
                   className={styles.team}
                 >
-                  {team.players.map((player) => (
-                    <Grid item xs={1} key={player.player_id}>
+                  {team.picks?.map((pick, i) => (
+                    <Grid item xs={1} key={`pick-${i}`}>
                       <Card
                         xs={1}
-                        className={styles.player}
+                        className={styles.pick}
                         sx={{
-                          backgroundColor: theme.palette[player.position][mode],
+                          backgroundColor:
+                            parseInt(pick.season) > currentYear() + 1
+                              ? theme.palette.pickSubdued[mode]
+                              : theme.palette.pick[mode],
+                          color: theme.palette.text[mode],
                         }}
                       >
-                        <div className={styles.name}>
-                          {player.first_name}
-                          <br />
-                          {player.last_name}
+                        <div className={styles.value}>
+                          {pick.season} Round {pick.round}
                         </div>
-                        <div className={styles.meta}>
-                          <Tooltip title="Position">
-                            <div className={styles.info}>
-                              👤 {player.position}
-                            </div>
-                          </Tooltip>
-                          <Tooltip title="Age">
-                            <div className={styles.info}>🎂 {player.age}</div>
-                          </Tooltip>
-                        </div>
-                        <div className={styles.meta}>
-                          <Tooltip title="Team">
-                            <div className={styles.info}>🏟️ {player.team}</div>
-                          </Tooltip>
-                          <Tooltip title="Number">
-                            <div className={styles.info}>
-                              #️⃣ {player.number}
-                            </div>
-                          </Tooltip>
+                        <div className={styles.originalOwner}>
+                          {draftView
+                            ? pick.current_owner.display_name
+                            : pick.original_owner.display_name}
                         </div>
                       </Card>
                     </Grid>
@@ -329,8 +304,74 @@ export default function LeagueView({ colorMode, setColorMode }) {
               ))}
             </Grid>
           </div>
+        )}
+        <div className={styles.rostersContainer}>
+          <Grid container className={styles.rosters}>
+            {rosters.map((team) => (
+              <Grid
+                key={team.owner_id}
+                item
+                container
+                xs={1}
+                direction="column"
+                className={styles.team}
+              >
+                {team.players.map((player) => (
+                  <Grid item xs={1} key={player.player_id}>
+                    <Card
+                      xs={1}
+                      className={styles.player}
+                      sx={{
+                        backgroundColor: theme.palette[player.position][mode],
+                      }}
+                    >
+                      <div className={styles.name}>
+                        {player.first_name}
+                        <br />
+                        {player.last_name}
+                      </div>
+                      <div className={styles.meta}>
+                        <Tooltip title="Position">
+                          <div className={styles.info}>
+                            👤 {player.position}
+                          </div>
+                        </Tooltip>
+                        <Tooltip title="Age">
+                          <div className={styles.info}>🎂 {player.age}</div>
+                        </Tooltip>
+                      </div>
+                      <div className={styles.meta}>
+                        <Tooltip title="Team">
+                          <div className={styles.info}>🏟️ {player.team}</div>
+                        </Tooltip>
+                        <Tooltip title="Number">
+                          <div className={styles.info}>#️⃣ {player.number}</div>
+                        </Tooltip>
+                      </div>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            ))}
+          </Grid>
         </div>
       </div>
-    )
+    </div>
+  ) : (
+    <div
+      className={styles.container}
+      style={{
+        backgroundColor: theme.palette.background[mode],
+      }}
+    >
+      <div
+        className={styles.loadingContent}
+        style={{
+          color: theme.palette.text[mode],
+        }}
+      >
+        <h1 className={styles.loading}>Loading your league...</h1>
+      </div>
+    </div>
   );
 }

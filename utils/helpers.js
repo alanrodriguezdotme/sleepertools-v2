@@ -5,7 +5,7 @@ export function currentYear() {
   return d.getFullYear();
 }
 
-export function sortPicks(leagueInfo, trades) {
+export function sortPicks(leagueInfo, trades, teams) {
   let allPicks = [];
   let tradedPicks = [];
 
@@ -52,7 +52,22 @@ export function sortPicks(leagueInfo, trades) {
     }
   }
 
-  return _.sortBy(allPicks, ["season", "owner_id", "round"]);
+  // assign user info to each pick
+  allPicks.forEach((pick) => {
+    teams.forEach((team) => {
+      if (pick.owner_id === team.roster_id) {
+        pick.current_owner = team.user;
+      }
+      if (pick.previous_owner_id === team.roster_id) {
+        pick.previous_owner = team.user;
+      }
+      if (pick.roster_id === team.roster_id) {
+        pick.original_owner = team.user;
+      }
+    });
+  });
+
+  return _.sortBy(allPicks, ["season", "round", "owner_id"]);
 }
 
 export function sortPlayers(team) {
