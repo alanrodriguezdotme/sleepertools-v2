@@ -156,8 +156,9 @@ div.player {
 @media (max-width: 600px) {
   .appbar {
     height: 64px;
+    justify-content: center;
   }
   .leagueName {
-    display: none;
+    opacity: 0;
   }
 }

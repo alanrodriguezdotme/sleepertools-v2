@@ -52,7 +52,7 @@ export const mainTheme = {
     QB: {
       light: red[100],
       main: red[500],
-      dark: red[900],
+      dark: "#900000",
     },
     RB: {
       light: green[100],
@@ -67,7 +67,7 @@ export const mainTheme = {
     TE: {
       light: orange[100],
       main: orange[500],
-      dark: orange[900],
+      dark: "#BF5F00",
     },
     K: {
       light: purple[100],

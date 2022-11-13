@@ -66,6 +66,8 @@ export function sortPlayers(team) {
   let LBs = [];
   let DBs = [];
 
+  console.log("... sorting players");
+
   team.forEach((player) => {
     switch (player.position) {
       case "QB":
@@ -100,15 +102,19 @@ export function sortPlayers(team) {
     }
   });
 
+  function orderByADP(players) {
+    return _.orderBy(players, (p) => p.search_rank, ["asc"]);
+  }
+
   return [
-    ...QBs,
-    ...RBs,
-    ...WRs,
-    ...TEs,
-    ...Ks,
-    ...DEFs,
-    ...DLs,
-    ...LBs,
-    ...DBs,
+    ...orderByADP(QBs),
+    ...orderByADP(RBs),
+    ...orderByADP(WRs),
+    ...orderByADP(TEs),
+    ...orderByADP(Ks),
+    ...orderByADP(DEFs),
+    ...orderByADP(DLs),
+    ...orderByADP(LBs),
+    ...orderByADP(DBs),
   ];
 }

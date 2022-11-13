@@ -11,6 +11,7 @@ import {
   MenuItem,
   Select,
   Toolbar,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -98,7 +99,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
           );
           break;
       }
-      console.log({ sortedRosters });
+
       setRosters([...sortedRosters]);
     }
   }, [sortBy]);
@@ -302,14 +303,24 @@ export default function LeagueView({ colorMode, setColorMode }) {
                           {player.last_name}
                         </div>
                         <div className={styles.meta}>
-                          <div className={styles.info}>
-                            👤 {player.position}
-                          </div>
-                          <div className={styles.info}>🎂 {player.age}</div>
+                          <Tooltip title="Position">
+                            <div className={styles.info}>
+                              👤 {player.position}
+                            </div>
+                          </Tooltip>
+                          <Tooltip title="Age">
+                            <div className={styles.info}>🎂 {player.age}</div>
+                          </Tooltip>
                         </div>
                         <div className={styles.meta}>
-                          <div className={styles.info}>📍 {player.team}</div>
-                          <div className={styles.info}>#️⃣ {player.number}</div>
+                          <Tooltip title="Team">
+                            <div className={styles.info}>🏟️ {player.team}</div>
+                          </Tooltip>
+                          <Tooltip title="Number">
+                            <div className={styles.info}>
+                              #️⃣ {player.number}
+                            </div>
+                          </Tooltip>
                         </div>
                       </Card>
                     </Grid>
