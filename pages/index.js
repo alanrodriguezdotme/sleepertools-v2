@@ -55,6 +55,7 @@ export default function Home({ colorMode, setColorMode }) {
                   e.preventDefault();
                 }
               }}
+              className={styles.input}
             />
             <Button variant="contained" onClick={handleSignIn}>
               View your leagues
@@ -73,6 +74,7 @@ export default function Home({ colorMode, setColorMode }) {
                 defaultValue={sleeperLeagues[0]}
                 label="Select one of your leagues"
                 onChange={(e) => setSelectedLeague(e.target.value)}
+                className={styles.input}
               >
                 {sleeperLeagues.map((league) => (
                   <MenuItem key={league.league_id} value={league}>

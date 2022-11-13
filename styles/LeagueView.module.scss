@@ -1,13 +1,12 @@
-@import "base";
-
 .container {
   width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 .content {
   min-width: 100%;
-  width: fit-content;
+  width: 100%;
   height: 100%;
   padding-top: 64px;
   display: flex;
@@ -30,11 +29,12 @@ div.users {
   display: flex;
   flex-wrap: nowrap;
   width: fit-content;
+  gap: 8px;
 }
 
 div.user {
   flex-wrap: nowrap;
-  width: 104px;
+  width: 120px;
   height: 40px;
   padding: 8px;
   display: flex;
@@ -57,10 +57,12 @@ div.picksContainer {
   padding: 10px;
   flex: 1;
 }
+
 div.picks {
   display: flex;
   flex-wrap: nowrap;
   width: fit-content;
+  gap: 8px;
 }
 
 div.pick {
@@ -85,12 +87,14 @@ div.rosters {
   display: flex;
   flex-wrap: nowrap;
   width: fit-content;
+  gap: 8px;
 }
 
 div.team {
   flex-wrap: nowrap;
   width: 120px;
   height: fit-content;
+  gap: 8px;
 }
 
 div.player {
@@ -112,5 +116,45 @@ div.player {
     .info {
       flex: 1;
     }
+  }
+}
+
+@media (max-width: 1540px) {
+  div.usersContainer,
+  div.rostersContainer,
+  div.picksContainer {
+    width: fit-content;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 1200px) {
+  div.usersContainer,
+  div.rostersContainer,
+  div.picksContainer {
+    padding: 0;
+    justify-content: flex-start;
+    background-color: transparent;
+  }
+
+  div.users,
+  div.picks,
+  div.team,
+  div.rosters {
+    gap: 1px;
+    padding: 0;
+  }
+
+  div.user,
+  div.pick,
+  div.player {
+    border-radius: 0;
+    width: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  div.leagueName {
+    display: none;
   }
 }

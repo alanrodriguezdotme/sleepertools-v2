@@ -162,6 +162,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
         }}
       >
         <AppBar
+          className={styles.appbar}
           color="appbar"
           sx={{ backgroundColor: theme.palette.appbar[mode] }}
         >
@@ -174,7 +175,11 @@ export default function LeagueView({ colorMode, setColorMode }) {
             >
               <ArrowBack />
             </IconButton>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{ flexGrow: 1 }}
+              className={styles.leagueName}
+            >
               {leagueInfo.name}
             </Typography>
             <IconButton
@@ -213,17 +218,11 @@ export default function LeagueView({ colorMode, setColorMode }) {
               backgroundColor: theme.palette.usersBar[mode],
             }}
           >
-            <Grid container spacing={1} className={styles.users}>
+            <Grid container className={styles.users}>
               {rosters.map((team) => (
-                <Grid
-                  item
-                  xs={1}
-                  key={team.owner_id}
-                  sx={{ position: "static" }}
-                >
+                <Grid item xs={1} key={team.owner_id}>
                   <Card
                     xs={1}
-                    variant="outlined"
                     className={styles.user}
                     sx={{
                       backgroundColor: theme.palette.user[mode],
@@ -243,11 +242,10 @@ export default function LeagueView({ colorMode, setColorMode }) {
           </Box>
           {leagueInfo.settings.type === 2 && (
             <div className={styles.picksContainer}>
-              <Grid container spacing={1} className={styles.picks}>
+              <Grid container className={styles.picks}>
                 {rosters.map((team) => (
                   <Grid
                     key={team.owner_id}
-                    spacing={1}
                     item
                     container
                     xs={1}
@@ -279,11 +277,10 @@ export default function LeagueView({ colorMode, setColorMode }) {
             </div>
           )}
           <div className={styles.rostersContainer}>
-            <Grid container spacing={1} className={styles.rosters}>
+            <Grid container className={styles.rosters}>
               {rosters.map((team) => (
                 <Grid
                   key={team.owner_id}
-                  spacing={1}
                   item
                   container
                   xs={1}
