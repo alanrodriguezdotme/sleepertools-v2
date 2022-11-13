@@ -14,7 +14,7 @@ import {
 export const mainTheme = {
   palette: {
     background: {
-      light: grey[200],
+      light: grey[100],
       main: grey[500],
       dark: grey[900],
     },
@@ -31,15 +31,15 @@ export const mainTheme = {
     usersBar: {
       light: indigo[100],
       main: indigo[200],
-      dark: indigo[900],
+      dark: grey[800],
     },
     user: {
-      light: "#fff",
+      light: grey[100],
       main: grey[500],
       dark: grey[900],
     },
     pick: {
-      light: "#fff",
+      light: grey[300],
       main: grey[500],
       dark: grey[800],
     },

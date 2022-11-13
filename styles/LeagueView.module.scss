@@ -134,7 +134,7 @@ div.player {
   div.picksContainer {
     padding: 0;
     justify-content: flex-start;
-    background-color: transparent;
+    background-color: transparent !important;
   }
 
   div.users,
@@ -154,7 +154,10 @@ div.player {
 }
 
 @media (max-width: 600px) {
-  div.leagueName {
+  .appbar {
+    height: 64px;
+  }
+  .leagueName {
     display: none;
   }
 }
