@@ -194,17 +194,19 @@ export default function LeagueView({ colorMode, setColorMode }) {
           >
             {leagueInfo.name}
           </Typography>
-          <Tooltip title="Toggle draft view">
-            <IconButton
-              color="text"
-              size="large"
-              sx={{ color: theme.palette.text[mode] }}
-              edge="start"
-              onClick={() => setDraftView(!draftView)}
-            >
-              {draftView ? <GridOff /> : <GridOn />}
-            </IconButton>
-          </Tooltip>
+          {leagueInfo.settings.type === 2 && (
+            <Tooltip title="Toggle draft view">
+              <IconButton
+                color="text"
+                size="large"
+                sx={{ color: theme.palette.text[mode] }}
+                edge="start"
+                onClick={() => setDraftView(!draftView)}
+              >
+                {draftView ? <GridOff /> : <GridOn />}
+              </IconButton>
+            </Tooltip>
+          )}
           <IconButton
             color="text"
             size="large"
