@@ -58,6 +58,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
               getTradedPicks(id, (picks) => {
                 const updatedPicks = sortPicks(info, picks, updatedRosters);
                 setAllPicks(updatedPicks);
+                console.log({ updatedRosters });
                 setRosters(addPicks(updatedRosters, updatedPicks));
               });
             } else {
@@ -258,8 +259,10 @@ export default function LeagueView({ colorMode, setColorMode }) {
                   <div className={styles.username}>
                     {team.user.display_name}
                   </div>
-                  <div className={styles.userInfo}>
-                    {`${team.settings.wins}-${team.settings.losses} ${team.settings.fpts}pts`}
+                  <div className={styles.record}>
+                    {`${team.settings.wins}-${team.settings.losses}`}
+                    <br />
+                    {`${team.settings.fpts}/${team.settings.ppts}pts`}
                   </div>
                 </Card>
               </Grid>
@@ -269,7 +272,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
         {leagueInfo.settings.type === 2 && (
           <div className={styles.picksContainer}>
             <Grid container className={styles.picks}>
-              {rosters.map((team) => (
+              {rosters.map((team, teamIndex) => (
                 <Grid
                   key={team.owner_id}
                   item
@@ -292,7 +295,12 @@ export default function LeagueView({ colorMode, setColorMode }) {
                         }}
                       >
                         <div className={styles.value}>
-                          {pick.season} Round {pick.round}
+                          {draftView &&
+                          parseInt(pick.season) === currentYear() + 1
+                            ? `${pick.round}.${
+                                (teamIndex < 9 ? "0" : "") + (teamIndex + 1)
+                              }`
+                            : `${pick.season} Round ${pick.round}`}
                         </div>
                         <div className={styles.originalOwner}>
                           {draftView

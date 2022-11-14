@@ -35,7 +35,6 @@ div.users {
 div.user {
   flex-wrap: nowrap;
   width: 120px;
-  height: 40px;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -43,9 +42,15 @@ div.user {
   justify-content: center;
   font-size: 10px;
   white-space: nowrap;
+  gap: 4px;
 
   .username {
     font-weight: 600;
+  }
+
+  .record {
+    // font-weight: 600;
+    text-align: center;
   }
 }
 
