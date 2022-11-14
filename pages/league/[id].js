@@ -89,15 +89,15 @@ export default function LeagueView({ colorMode, setColorMode }) {
         case "wins-asc":
           sortedRosters = _.orderBy(
             sortedRosters,
-            (team) => team.settings.wins,
-            ["asc"]
+            [(team) => team.settings.wins, (team) => team.settings.fpts],
+            ["asc", "asc"]
           );
           break;
         case "wins-desc":
           sortedRosters = _.orderBy(
             sortedRosters,
-            (team) => team.settings.wins,
-            ["desc"]
+            [(team) => team.settings.wins, (team) => team.settings.fpts],
+            ["desc", "desc"]
           );
           break;
         case "fpts-asc":
