@@ -371,7 +371,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
                           <div className={styles.info}>🏟️ {player.team}</div>
                         </Tooltip>
                         <Tooltip title="Number">
-                          <div className={styles.info}>#️⃣ {player.number}</div>
+                          <div className={styles.info}>👕 {player.number}</div>
                         </Tooltip>
                       </div>
                     </Card>
