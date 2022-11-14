@@ -114,6 +114,20 @@ export default function LeagueView({ colorMode, setColorMode }) {
             ["desc"]
           );
           break;
+        case "ppts-asc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.ppts,
+            ["asc"]
+          );
+          break;
+        case "ppts-desc":
+          sortedRosters = _.orderBy(
+            sortedRosters,
+            (team) => team.settings.ppts,
+            ["desc"]
+          );
+          break;
       }
 
       setRosters([...sortedRosters]);
@@ -234,6 +248,8 @@ export default function LeagueView({ colorMode, setColorMode }) {
               <MenuItem value="wins-desc">Wins, descending</MenuItem>
               <MenuItem value="fpts-asc">Points for, ascending</MenuItem>
               <MenuItem value="fpts-desc">Points for, descending</MenuItem>
+              <MenuItem value="ppts-asc">Max points for, ascending</MenuItem>
+              <MenuItem value="ppts-desc">Max points for, descending</MenuItem>
             </Select>
           </FormControl>
         </Toolbar>
