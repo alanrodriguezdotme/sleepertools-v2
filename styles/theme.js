@@ -14,9 +14,9 @@ import {
 export const mainTheme = {
   palette: {
     background: {
-      light: grey[100],
+      light: grey[50],
       main: grey[500],
-      dark: grey[900],
+      dark: "#151515",
     },
     text: {
       light: grey[800],
@@ -44,7 +44,7 @@ export const mainTheme = {
       dark: grey[800],
     },
     pickSubdued: {
-      light: grey[100],
+      light: grey[200],
       main: grey[500],
       dark: grey[900],
     },

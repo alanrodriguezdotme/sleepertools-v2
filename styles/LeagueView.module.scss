@@ -32,7 +32,6 @@ div.users {
 div.user {
   flex-wrap: nowrap;
   width: 100%;
-  padding: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,7 +83,7 @@ div.team {
 div.user,
 div.pick,
 div.player {
-  padding: 6px 8px;
+  padding: 8px;
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -150,7 +149,6 @@ div.player {
   div.team {
     gap: 1px;
     width: 120px;
-    padding: 0;
   }
 
   div.userContainer,

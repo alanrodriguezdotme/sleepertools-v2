@@ -191,6 +191,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
       <AppBar
         className={styles.appbar}
         color="appbar"
+        elevation={1}
         sx={{ backgroundColor: theme.palette.appbar[mode] }}
       >
         <Toolbar>
@@ -303,39 +304,43 @@ export default function LeagueView({ colorMode, setColorMode }) {
                   direction="column"
                   className={styles.team}
                 >
-                  {team.picks?.map((pick, i) => (
-                    <Grid
-                      item
-                      key={`pick-${i}`}
-                      className={styles.pickContainer}
-                    >
-                      <Card
-                        xs={1}
-                        className={styles.pick}
-                        sx={{
-                          backgroundColor:
-                            parseInt(pick.season) > currentYear() + 1
+                  {team.picks?.map((pick, i) => {
+                    let isFuturePick =
+                      parseInt(pick.season) > currentYear() + 1;
+                    return (
+                      <Grid
+                        item
+                        key={`pick-${i}`}
+                        className={styles.pickContainer}
+                      >
+                        <Card
+                          xs={1}
+                          className={styles.pick}
+                          sx={{
+                            backgroundColor: isFuturePick
                               ? theme.palette.pickSubdued[mode]
                               : theme.palette.pick[mode],
-                          color: theme.palette.text[mode],
-                        }}
-                      >
-                        <div className={styles.value}>
-                          {draftView &&
-                          parseInt(pick.season) === currentYear() + 1
-                            ? `${pick.round}.${
-                                (teamIndex < 9 ? "0" : "") + (teamIndex + 1)
-                              }`
-                            : `${pick.season} Round ${pick.round}`}
-                        </div>
-                        <div className={styles.originalOwner}>
-                          {draftView
-                            ? pick.current_owner.display_name
-                            : pick.original_owner.display_name}
-                        </div>
-                      </Card>
-                    </Grid>
-                  ))}
+                            color: theme.palette.text[mode],
+                            // outlineColor: isFuturePick ? "red" : "none",
+                          }}
+                        >
+                          <div className={styles.value}>
+                            {draftView &&
+                            parseInt(pick.season) === currentYear() + 1
+                              ? `${pick.round}.${
+                                  (teamIndex < 9 ? "0" : "") + (teamIndex + 1)
+                                }`
+                              : `${pick.season} Round ${pick.round}`}
+                          </div>
+                          <div className={styles.originalOwner}>
+                            {draftView
+                              ? pick.current_owner.display_name
+                              : pick.original_owner.display_name}
+                          </div>
+                        </Card>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               ))}
             </Grid>
