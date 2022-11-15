@@ -42,7 +42,13 @@ export default function LeagueView({ colorMode, setColorMode }) {
   const router = useRouter();
   const theme = useTheme();
   const { mode } = theme.palette;
-  const { id } = router.query;
+  const { id, sort, draft } = router.query;
+
+  useEffect(() => {
+    console.log({ sort, draft });
+    sort && setSortBy(sort);
+    draft === "true" && setDraftView(true);
+  }, [sort, draft]);
 
   useEffect(() => {
     if (id) {
@@ -73,6 +79,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
   useEffect(() => {
     if (rosters) {
       setRosters(addPicks(rosters, allPicks));
+      updateUrl();
     }
   }, [draftView]);
 
@@ -131,8 +138,16 @@ export default function LeagueView({ colorMode, setColorMode }) {
       }
 
       setRosters([...sortedRosters]);
+      updateUrl();
     }
   }, [sortBy]);
+
+  function updateUrl() {
+    router.push({
+      pathname: `/league/${id}/`,
+      query: { sort: sortBy, draft: draftView },
+    });
+  }
 
   function addPlayers(teams) {
     let updatedRosters = [];
