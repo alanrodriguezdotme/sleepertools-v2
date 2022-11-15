@@ -24,7 +24,7 @@ import {
   getRosters,
   getTradedPicks,
 } from "../../utils/sleeper-api";
-import _ from "lodash";
+import _, { set } from "lodash";
 import {
   ArrowBack,
   DarkMode,
@@ -50,7 +50,6 @@ export default function LeagueView({ colorMode, setColorMode }) {
     }
     if (draft === "true") {
       setDraftView(true);
-      rosters && allPicks && setRosters(addPicks(rosters, allPicks));
     }
   }, [sort, draft]);
 
@@ -68,7 +67,12 @@ export default function LeagueView({ colorMode, setColorMode }) {
               getTradedPicks(id, (picks) => {
                 const updatedPicks = sortPicks(info, picks, updatedRosters);
                 setAllPicks(updatedPicks);
-                setRosters(addPicks(updatedRosters, updatedPicks));
+                setRosters(
+                  addPicks(
+                    orderRosters(updatedRosters, sort || sortBy),
+                    updatedPicks
+                  )
+                );
               });
             } else {
               setRosters(updatedRosters);
@@ -88,62 +92,56 @@ export default function LeagueView({ colorMode, setColorMode }) {
 
   useEffect(() => {
     if (rosters) {
-      let sortedRosters = rosters;
-
-      switch (sortBy) {
-        case "default":
-          sortedRosters = _.orderBy(sortedRosters, (team) => team.roster_id, [
-            "asc",
-          ]);
-          break;
-        case "wins-asc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            [(team) => team.settings.wins, (team) => team.settings.fpts],
-            ["asc", "asc"]
-          );
-          break;
-        case "wins-desc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            [(team) => team.settings.wins, (team) => team.settings.fpts],
-            ["desc", "desc"]
-          );
-          break;
-        case "fpts-asc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            (team) => team.settings.fpts,
-            ["asc"]
-          );
-          break;
-        case "fpts-desc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            (team) => team.settings.fpts,
-            ["desc"]
-          );
-          break;
-        case "ppts-asc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            (team) => team.settings.ppts,
-            ["asc"]
-          );
-          break;
-        case "ppts-desc":
-          sortedRosters = _.orderBy(
-            sortedRosters,
-            (team) => team.settings.ppts,
-            ["desc"]
-          );
-          break;
-      }
-
-      setRosters([...sortedRosters]);
+      setRosters([...orderRosters(rosters, sortBy)]);
       sort !== sortBy && updateUrl();
     }
   }, [sortBy]);
+
+  function orderRosters(rostersToSort, sortType) {
+    let sortedRosters = rostersToSort;
+    switch (sortType) {
+      case "default":
+        sortedRosters = _.orderBy(sortedRosters, (team) => team.roster_id, [
+          "asc",
+        ]);
+        break;
+      case "wins-asc":
+        sortedRosters = _.orderBy(
+          sortedRosters,
+          [(team) => team.settings.wins, (team) => team.settings.fpts],
+          ["asc", "asc"]
+        );
+        break;
+      case "wins-desc":
+        sortedRosters = _.orderBy(
+          sortedRosters,
+          [(team) => team.settings.wins, (team) => team.settings.fpts],
+          ["desc", "desc"]
+        );
+        break;
+      case "fpts-asc":
+        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
+          "asc",
+        ]);
+        break;
+      case "fpts-desc":
+        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
+          "desc",
+        ]);
+        break;
+      case "ppts-asc":
+        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
+          "asc",
+        ]);
+        break;
+      case "ppts-desc":
+        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
+          "desc",
+        ]);
+        break;
+    }
+    return sortedRosters;
+  }
 
   function updateUrl() {
     router.push({
