@@ -263,24 +263,31 @@ export default function LeagueView({ colorMode, setColorMode }) {
         >
           <Grid container className={styles.users}>
             {rosters.map((team) => (
-              <Grid item xs={1} key={team.owner_id}>
-                <Card
-                  xs={1}
-                  className={styles.user}
-                  sx={{
-                    backgroundColor: theme.palette.user[mode],
-                    color: theme.palette.text[mode],
-                  }}
-                >
-                  <div className={styles.username}>
-                    {team.user.display_name}
-                  </div>
-                  <div className={styles.record}>
-                    {`${team.settings.wins}-${team.settings.losses}`}
-                    <br />
-                    {`${team.settings.fpts}/${team.settings.ppts}pts`}
-                  </div>
-                </Card>
+              <Grid
+                key={team.owner_id}
+                item
+                container
+                direction="column"
+                className={styles.team}
+              >
+                <Grid item key={team.owner_id} className={styles.userContainer}>
+                  <Card
+                    className={styles.user}
+                    sx={{
+                      backgroundColor: theme.palette.user[mode],
+                      color: theme.palette.text[mode],
+                    }}
+                  >
+                    <div className={styles.username}>
+                      {team.user.display_name}
+                    </div>
+                    <div className={styles.record}>
+                      {`${team.settings.wins}-${team.settings.losses}`}
+                      <br />
+                      {`${team.settings.fpts}/${team.settings.ppts}pts`}
+                    </div>
+                  </Card>
+                </Grid>
               </Grid>
             ))}
           </Grid>
@@ -293,12 +300,15 @@ export default function LeagueView({ colorMode, setColorMode }) {
                   key={team.owner_id}
                   item
                   container
-                  xs={1}
                   direction="column"
                   className={styles.team}
                 >
                   {team.picks?.map((pick, i) => (
-                    <Grid item xs={1} key={`pick-${i}`}>
+                    <Grid
+                      item
+                      key={`pick-${i}`}
+                      className={styles.pickContainer}
+                    >
                       <Card
                         xs={1}
                         className={styles.pick}
@@ -332,18 +342,21 @@ export default function LeagueView({ colorMode, setColorMode }) {
           </div>
         )}
         <div className={styles.rostersContainer}>
-          <Grid container className={styles.rosters}>
+          <Grid container className={styles.rosters} id="rosters">
             {rosters.map((team) => (
               <Grid
                 key={team.owner_id}
                 item
                 container
-                xs={1}
                 direction="column"
                 className={styles.team}
               >
                 {team.players.map((player) => (
-                  <Grid item xs={1} key={player.player_id}>
+                  <Grid
+                    item
+                    key={player.player_id}
+                    className={styles.playerContainer}
+                  >
                     <Card
                       xs={1}
                       className={styles.player}

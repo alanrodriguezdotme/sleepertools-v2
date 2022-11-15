@@ -15,10 +15,6 @@
 }
 
 div.usersContainer {
-  width: 100%;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
   align-items: center;
   position: sticky;
   top: 0;
@@ -29,12 +25,13 @@ div.users {
   display: flex;
   flex-wrap: nowrap;
   width: fit-content;
+  justify-content: center;
   gap: 8px;
 }
 
 div.user {
   flex-wrap: nowrap;
-  width: 120px;
+  width: 100%;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -42,10 +39,12 @@ div.user {
   justify-content: center;
   font-size: 10px;
   white-space: nowrap;
+  overflow: hidden;
   gap: 4px;
 
   .username {
     font-weight: 600;
+    overflow: hidden;
   }
 
   .record {
@@ -54,35 +53,8 @@ div.user {
   }
 }
 
-div.picksContainer {
-  width: 100%;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  flex: 1;
-}
-
-div.picks {
-  display: flex;
-  flex-wrap: nowrap;
-  width: fit-content;
-  gap: 8px;
-}
-
-div.team {
-  width: 120px;
-}
-
-div.pick {
-  padding: 6px 8px;
-  font-size: 10px;
-  width: 100%;
-  .value {
-    font-weight: 600;
-  }
-}
-
+div.usersContainer,
+div.picksContainer,
 div.rostersContainer {
   width: 100%;
   height: fit-content;
@@ -92,11 +64,13 @@ div.rostersContainer {
   flex: 1;
 }
 
+div.picks,
 div.rosters {
   display: flex;
   flex-wrap: nowrap;
   width: fit-content;
   gap: 8px;
+  justify-content: center;
 }
 
 div.team {
@@ -104,11 +78,27 @@ div.team {
   width: 120px;
   height: fit-content;
   gap: 8px;
+  overflow: hidden;
+}
+
+div.user,
+div.pick,
+div.player {
+  padding: 6px 8px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+div.pick {
+  font-size: 10px;
+
+  .value {
+    font-weight: 600;
+  }
 }
 
 div.player {
-  width: 100%;
-  padding: 6px 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -116,6 +106,7 @@ div.player {
   .name {
     white-space: nowrap;
     font-weight: 600;
+    width: 100%;
   }
 
   .meta {
@@ -136,37 +127,46 @@ div.player {
   align-items: center;
 }
 
-@media (max-width: 1540px) {
-  div.usersContainer,
-  div.rostersContainer,
-  div.picksContainer {
-    width: fit-content;
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 1200px) {
+@media (max-width: 1279px) {
   div.usersContainer,
   div.rostersContainer,
   div.picksContainer {
     padding: 0;
     justify-content: flex-start;
     background-color: transparent !important;
+    min-width: 100vw;
+    width: fit-content;
   }
 
   div.users,
   div.picks,
-  div.team,
   div.rosters {
     gap: 1px;
     padding: 0;
+    flex: 1;
+    // justify-content: flex-start;
+  }
+
+  div.team {
+    gap: 1px;
+    width: 120px;
+    padding: 0;
+  }
+
+  div.userContainer,
+  div.pickContainer,
+  div.playerContainer {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   div.user,
   div.pick,
   div.player {
     border-radius: 0;
-    width: 120px;
+    width: 100%;
   }
 }
 
