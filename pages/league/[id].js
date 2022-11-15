@@ -45,9 +45,13 @@ export default function LeagueView({ colorMode, setColorMode }) {
   const { id, sort, draft } = router.query;
 
   useEffect(() => {
-    console.log({ sort, draft });
-    sort && setSortBy(sort);
-    draft === "true" && setDraftView(true);
+    if (sort !== sortBy) {
+      setSortBy(sort);
+    }
+    if (draft === "true") {
+      setDraftView(true);
+      rosters && allPicks && setRosters(addPicks(rosters, allPicks));
+    }
   }, [sort, draft]);
 
   useEffect(() => {
@@ -64,7 +68,6 @@ export default function LeagueView({ colorMode, setColorMode }) {
               getTradedPicks(id, (picks) => {
                 const updatedPicks = sortPicks(info, picks, updatedRosters);
                 setAllPicks(updatedPicks);
-                console.log({ updatedRosters });
                 setRosters(addPicks(updatedRosters, updatedPicks));
               });
             } else {
@@ -81,7 +84,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
       setRosters(addPicks(rosters, allPicks));
       updateUrl();
     }
-  }, [draftView]);
+  }, [draftView, rosters]);
 
   useEffect(() => {
     if (rosters) {
@@ -138,7 +141,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
       }
 
       setRosters([...sortedRosters]);
-      updateUrl();
+      sort !== sortBy && updateUrl();
     }
   }, [sortBy]);
 
