@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/system";
 import Head from "next/head";
+import Script from "next/script";
 import { useEffect, useState } from "react";
 import "../styles/globals.scss";
 import { mainTheme } from "../styles/theme";
@@ -34,6 +35,20 @@ function MyApp({ Component, pageProps }) {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
+      {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-Z1FJCVYPGH"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-Z1FJCVYPGH');
+        `}
+      </Script>
       <Component
         {...pageProps}
         colorMode={colorMode}
