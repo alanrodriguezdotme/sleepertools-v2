@@ -49,12 +49,13 @@ export default function LeagueView({ colorMode, setColorMode }) {
   const theme = useTheme();
   const { mode } = theme.palette;
   const { id, sort, draft } = router.query;
+  const isDynasty = leagueInfo?.settings?.type === 2;
 
   useEffect(() => {
     if (sort && sort !== sortBy) {
       setSortBy(sort);
     }
-    if (draft && draft === "true") {
+    if (isDynasty && draft && draft === "true") {
       setDraftView(true);
     }
   }, [sort, draft]);
@@ -69,7 +70,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
           updatedRosters = addPlayers(rosters);
           getLeagueUsers(id, (users) => {
             updatedRosters = addUsers(updatedRosters, users);
-            if (info?.settings?.type === 2 && rosters) {
+            if (isDynasty && rosters) {
               getTradedPicks(id, (picks) => {
                 const updatedPicks = sortPicks(info, picks, updatedRosters);
                 setAllPicks(updatedPicks);
@@ -90,7 +91,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
   }, [id]);
 
   useEffect(() => {
-    if (rosters) {
+    if (rosters & isDynasty) {
       setRosters(addPicks(rosters, allPicks));
       draftView && updateUrl();
     }
