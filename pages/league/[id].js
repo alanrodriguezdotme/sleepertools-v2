@@ -17,7 +17,12 @@ import {
 } from "@mui/material";
 import * as playerData from "../api/players.json";
 import styles from "../../styles/LeagueView.module.scss";
-import { currentYear, sortPicks, sortPlayers } from "../../utils/helpers";
+import {
+  currentYear,
+  orderRosters,
+  sortPicks,
+  sortPlayers,
+} from "../../utils/helpers";
 import {
   getLeagueInfo,
   getLeagueUsers,
@@ -32,6 +37,7 @@ import {
   GridOn,
   LightMode,
 } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function LeagueView({ colorMode, setColorMode }) {
   const [rosters, setRosters] = useState(null);
@@ -45,10 +51,10 @@ export default function LeagueView({ colorMode, setColorMode }) {
   const { id, sort, draft } = router.query;
 
   useEffect(() => {
-    if (sort !== sortBy) {
+    if (sort && sort !== sortBy) {
       setSortBy(sort);
     }
-    if (draft === "true") {
+    if (draft && draft === "true") {
       setDraftView(true);
     }
   }, [sort, draft]);
@@ -86,62 +92,16 @@ export default function LeagueView({ colorMode, setColorMode }) {
   useEffect(() => {
     if (rosters) {
       setRosters(addPicks(rosters, allPicks));
-      updateUrl();
+      draftView && updateUrl();
     }
   }, [draftView, rosters]);
 
   useEffect(() => {
     if (rosters) {
       setRosters([...orderRosters(rosters, sortBy)]);
-      sort !== sortBy && updateUrl();
+      sort && sort !== sortBy && updateUrl();
     }
   }, [sortBy]);
-
-  function orderRosters(rostersToSort, sortType) {
-    let sortedRosters = rostersToSort;
-    switch (sortType) {
-      case "default":
-        sortedRosters = _.orderBy(sortedRosters, (team) => team.roster_id, [
-          "asc",
-        ]);
-        break;
-      case "wins-asc":
-        sortedRosters = _.orderBy(
-          sortedRosters,
-          [(team) => team.settings.wins, (team) => team.settings.fpts],
-          ["asc", "asc"]
-        );
-        break;
-      case "wins-desc":
-        sortedRosters = _.orderBy(
-          sortedRosters,
-          [(team) => team.settings.wins, (team) => team.settings.fpts],
-          ["desc", "desc"]
-        );
-        break;
-      case "fpts-asc":
-        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
-          "asc",
-        ]);
-        break;
-      case "fpts-desc":
-        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
-          "desc",
-        ]);
-        break;
-      case "ppts-asc":
-        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
-          "asc",
-        ]);
-        break;
-      case "ppts-desc":
-        sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
-          "desc",
-        ]);
-        break;
-    }
-    return sortedRosters;
-  }
 
   function updateUrl() {
     router.push({
@@ -211,14 +171,17 @@ export default function LeagueView({ colorMode, setColorMode }) {
         sx={{ backgroundColor: theme.palette.appbar[mode] }}
       >
         <Toolbar>
+          {/* <Link href="/"> */}
           <IconButton
             color="text"
             sx={{ color: theme.palette.text[mode] }}
             edge="start"
-            onClick={() => router.push("/")}
+            // Neither <Link> nor router.push work
+            onClick={() => (window.location.href = "/")}
           >
             <ArrowBack />
           </IconButton>
+          {/* </Link> */}
           <Typography
             variant="h6"
             sx={{ flexGrow: 1 }}

@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>Sleeper Draftboard View</title>
+        <title>FF Draftboard</title>
         <link rel="shortcut icon" href="/football.png" />
         <meta
           name="description"

@@ -133,3 +133,49 @@ export function sortPlayers(team) {
     ...orderByADP(DBs),
   ];
 }
+
+export function orderRosters(rostersToSort, sortType) {
+  let sortedRosters = rostersToSort;
+  switch (sortType) {
+    case "default":
+      sortedRosters = _.orderBy(sortedRosters, (team) => team.roster_id, [
+        "asc",
+      ]);
+      break;
+    case "wins-asc":
+      sortedRosters = _.orderBy(
+        sortedRosters,
+        [(team) => team.settings.wins, (team) => team.settings.fpts],
+        ["asc", "asc"]
+      );
+      break;
+    case "wins-desc":
+      sortedRosters = _.orderBy(
+        sortedRosters,
+        [(team) => team.settings.wins, (team) => team.settings.fpts],
+        ["desc", "desc"]
+      );
+      break;
+    case "fpts-asc":
+      sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
+        "asc",
+      ]);
+      break;
+    case "fpts-desc":
+      sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.fpts, [
+        "desc",
+      ]);
+      break;
+    case "ppts-asc":
+      sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
+        "asc",
+      ]);
+      break;
+    case "ppts-desc":
+      sortedRosters = _.orderBy(sortedRosters, (team) => team.settings.ppts, [
+        "desc",
+      ]);
+      break;
+  }
+  return sortedRosters;
+}

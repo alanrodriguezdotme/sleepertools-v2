@@ -89,24 +89,41 @@ export default function Home({ colorMode, setColorMode }) {
           </div>
         )}
         <div className={styles.footer}>
-          <div>
-            Created by{" "}
-            <Link
-              href="https://alanrodriguez.me"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Alan Rodriguez
-            </Link>
+          <div className={styles.updates}>
+            <strong>Recent updates:</strong>
+            <ul>
+              <li>
+                URL changes based on draft view and sort, making it easier to
+                share.
+              </li>
+              <li>
+                Switches to compact/mobile view when the browser width is below
+                1440px.
+              </li>
+            </ul>
           </div>
-          <div>
-            <Link
-              href="https://www.buymeacoffee.com/alanrodriguez"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Dig this website? ☕️
-            </Link>
+          <div className={styles.credit}>
+            <div>
+              Created by{" "}
+              <Link
+                href="https://alanrodriguez.me"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Alan Rodriguez
+              </Link>
+              <br />
+              <strong>
+                Dig this website?{" "}
+                <Link
+                  href="https://www.buymeacoffee.com/alanrodriguez"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Buy me a coffee ☕️
+                </Link>
+              </strong>
+            </div>
           </div>
         </div>
       </main>
