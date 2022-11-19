@@ -69,7 +69,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
           updatedRosters = addPlayers(rosters);
           getLeagueUsers(id, (users) => {
             updatedRosters = addUsers(updatedRosters, users);
-            if (leagueInfo?.settings?.type === 2) {
+            if (info?.settings?.type === 2) {
               getTradedPicks(id, (picks) => {
                 const updatedPicks = sortPicks(info, picks, updatedRosters);
                 setAllPicks(updatedPicks);
@@ -90,7 +90,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
   }, [id]);
 
   useEffect(() => {
-    if (rosters & (leagueInfo?.settings?.type === 2)) {
+    if (rosters && leagueInfo.settings.type === 2) {
       setRosters(addPicks(rosters, allPicks));
       draftView && updateUrl();
     }
