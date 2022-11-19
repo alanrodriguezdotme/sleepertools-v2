@@ -56,7 +56,8 @@ div.user {
 div.usersContainer,
 div.picksContainer,
 div.rostersContainer {
-  width: 100%;
+  width: fit-content;
+  min-width: 100%;
   height: fit-content;
   display: flex;
   justify-content: center;
