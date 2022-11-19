@@ -13,10 +13,10 @@ import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import { getUserInfo, getUserLeagues } from "../utils/sleeper-api";
 
-export default function Home({ colorMode, setColorMode }) {
+export default function Home({ colorMode }) {
   const [sleeperUsername, setSleeperUsername] = useState("");
   const [sleeperLeagues, setSleeperLeagues] = useState(null);
-  const [selectedLeague, setSelectedLeague] = useState(null);
+  const [selectedLeague, setSelectedLeague] = useState("");
   const theme = useTheme();
   const router = useRouter();
 
