@@ -15,6 +15,7 @@ import Users from "../../components/users";
 import Picks from "../../components/picks";
 import Rosters from "../../components/rosters";
 import TopBar from "../../components/topbar";
+import Head from "next/head";
 
 export default function LeagueView({ colorMode, setColorMode }) {
   const [rosters, setRosters] = useState(null);
@@ -141,6 +142,13 @@ export default function LeagueView({ colorMode, setColorMode }) {
         backgroundColor: theme.palette.background[mode],
       }}
     >
+      <Head>
+        <title>{leagueInfo.name} - FF Draftboard</title>
+        <meta
+          name="description"
+          content={`Draftboard view for ${leagueInfo.name}`}
+        />
+      </Head>
       <TopBar
         leagueInfo={leagueInfo}
         draftView={draftView}

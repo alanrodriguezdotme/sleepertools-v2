@@ -27,12 +27,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>FF Draftboard</title>
         <link rel="shortcut icon" href="/football.png" />
-        <meta
-          name="description"
-          content="Draftboard view for Sleeper leagues"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}

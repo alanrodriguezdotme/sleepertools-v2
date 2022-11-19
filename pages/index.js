@@ -12,6 +12,7 @@ import { useState } from "react";
 import styles from "../styles/Home.module.scss";
 import { useRouter } from "next/router";
 import { getUserInfo, getUserLeagues } from "../utils/sleeper-api";
+import Head from "next/head";
 
 export default function Home({ colorMode }) {
   const [sleeperUsername, setSleeperUsername] = useState("");
@@ -40,6 +41,13 @@ export default function Home({ colorMode }) {
         color: theme.palette.text[colorMode],
       }}
     >
+      <Head>
+        <title>FF Draftboard</title>
+        <meta
+          name="description"
+          content="Draftboard view for Sleeper leagues"
+        />
+      </Head>
       <main className={styles.main}>
         {/* <h1>Sleeper League View</h1> */}
         {sleeperLeagues === null ? (
