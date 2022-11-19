@@ -69,7 +69,7 @@ export default function LeagueView({ colorMode, setColorMode }) {
   useEffect(() => {
     if (rosters && leagueInfo.settings.type === 2) {
       setRosters(addPicks(rosters, allPicks));
-      draftView && updateUrl();
+      updateUrl();
     }
   }, [draftView, rosters]);
 
