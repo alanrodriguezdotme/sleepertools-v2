@@ -2,7 +2,7 @@ import _ from "lodash";
 
 export function currentYear() {
   const d = new Date();
-  return d.getFullYear();
+  return d.getFullYear() - 1;
 }
 
 export function sortPicks(leagueInfo, trades, teams) {
