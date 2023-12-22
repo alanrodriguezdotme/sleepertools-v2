@@ -1,12 +1,13 @@
 import Head from "next/head";
 import styles from "../../styles/Tournament.module.scss";
 import { Alert, Button, TextField, Typography, useTheme } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   getLeagueInfo,
   getLeagueUsers,
   getRosters,
+  getUserInfo,
 } from "../../utils/sleeper-api";
 import { useRouter } from "next/router";
 
@@ -18,56 +19,71 @@ export default function Tournament({ colorMode }) {
   const [allTeams, setAllTeams] = useState([]);
   const [alert, setAlert] = useState(null);
 
+  useEffect(() => {
+    if (router.query.leagues) {
+      const leagues = router.query.leagues.split(",");
+      setLeagueIds(leagues);
+
+      const fetchData = async (id) => {
+        await getTeams(id);
+      };
+
+      leagues.forEach((league) => {
+        fetchData(league);
+      });
+    }
+  }, [router.query.leagues]);
+
   const columns = [
-    { field: "username", headerName: "Username", width: 200 },
-    { field: "teamName", headerName: "Team Name", width: 200 },
-    { field: "leagueName", headerName: "League Name", width: 200 },
+    { field: "username", headerName: "USERNAME", width: 200 },
+    // { field: "teamName", headerName: "TEAM", width: 200 },
+    { field: "leagueName", headerName: "LEAGUE", width: 200 },
     {
       field: "pointsFor",
-      headerName: "Points for",
+      headerName: "POINTS",
       type: "number",
-      width: 100,
+      width: 150,
     },
     {
       field: "maxPointsFor",
-      headerName: "Max points for",
+      headerName: "MAX POINTS",
       type: "number",
-      width: 100,
+      width: 150,
     },
     {
       filed: "pointsAgainst",
-      headerName: "Points against",
+      headerName: "POINTS AGAINST",
       type: "number",
-      width: 100,
+      width: 150,
     },
-    { field: "wins", headerName: "Wins", width: 100 },
-    { field: "losses", headerName: "Losses", width: 100 },
-    { field: "ties", headerName: "Ties", width: 100 },
+    { field: "wins", headerName: "W", width: 50, type: "number" },
+    { field: "losses", headerName: "L", width: 50, type: "number" },
+    { field: "ties", headerName: "T", width: 50, type: "number" },
   ];
 
-  const getTeams = (leagueId) => {
-    const teams = [];
-    setAlert({ severity: "info", message: `Fetching rosters for ${leagueId}` });
-    getLeagueInfo(leagueId, (info) => {
-      if (!info) {
-        setAlert({
-          severity: "error",
-          message: `No league found for ${leagueId}`,
-        });
-        return;
-      }
-      let leagueName = info.name;
+  useEffect(() => {
+    console.log({ allTeams });
+  }, [allTeams]);
 
-      getLeagueUsers(leagueId, (users) => {
-        users.forEach((user) => {
-          teams.push({
-            id: user.user_id,
-            username: user.display_name,
-            teamName: user.metadata.team_name,
+  const getTeams = async (leagueId) => {
+    let teams = [];
+
+    // get league info, start chain
+    await getLeagueInfo(
+      leagueId,
+      (info) => {
+        // console.log({ info });
+        if (!info) {
+          setAlert({
+            severity: "error",
+            message: `No league found for ${leagueId}`,
           });
-        });
+          return false;
+        }
+        let leagueName = info.name;
 
         getRosters(leagueId, (rosters) => {
+          // console.log({ rosters });
           rosters.forEach((roster) => {
             const {
               fpts,
@@ -80,37 +96,68 @@ export default function Tournament({ colorMode }) {
               losses,
               ties,
             } = roster.settings;
-            teams.forEach((team) => {
-              if (team.id === roster.owner_id) {
-                team.leagueName = leagueName;
-                team.pointsFor = (fpts + fpts_decimal / 100).toFixed(2);
-                team.maxPointsFor = (ppts + ppts_decimal / 100).toFixed(2);
-                team.pointsAgainst = (
+
+            getUserInfo(roster.owner_id, (user) => {
+              // add team data to teams array
+              teams.push({
+                username: user.username,
+                id: leagueId + roster.owner_id,
+                owner_id: roster.owner_id,
+                leagueName: leagueName,
+                pointsFor: (fpts + fpts_decimal / 100).toFixed(2),
+                maxPointsFor: (ppts + ppts_decimal / 100).toFixed(2),
+                pointsAgainst: (
                   fpts_against +
                   fpts_against_decimal / 100
-                ).toFixed(2);
-                team.wins = wins;
-                team.losses = losses;
-                team.ties = ties;
+                ).toFixed(2),
+                wins: wins,
+                losses: losses,
+                ties: ties,
+              });
+              if (teams.length === info.total_rosters) {
+                setAllTeams((preAllTeams) => [...preAllTeams, ...teams]);
               }
             });
           });
-          router.push({
-            pathname: `/tournament/`,
-            query: { leagues: leagueIds },
-          });
-          console.log({ teams });
-          setAllTeams(teams);
-          setAlert(null);
         });
-      });
-    });
+      },
+      // displaying axios error on front-end
+      (error) => {
+        console.log({ error });
+        setAlert({
+          severity: "error",
+          message: `Error fetching rosters for ${leagueId}`,
+          onClose: () => setAlert(null),
+        });
+      }
+    );
   };
 
-  const handleAddLeague = () => {
-    getTeams(leagueIdValue);
-    setLeagueIds([...leagueIds, leagueIdValue]);
-    setLeagueIdValue("");
+  const handleAddLeague = async () => {
+    setAlert({
+      severity: "info",
+      message: `Fetching rosters for ${leagueIdValue}`,
+    });
+    await getLeagueInfo(
+      leagueIdValue,
+      (info) => {
+        setLeagueIds([...leagueIds, leagueIdValue]);
+        setLeagueIdValue("");
+        setAlert(null);
+        router.push({
+          pathname: `/tournament/`,
+          query: { leagues: leagueIds },
+        });
+      },
+      (error) => {
+        console.log({ error });
+        setAlert({
+          severity: "error",
+          message: `Error fetching rosters for ${leagueIdValue}`,
+          onClose: () => setAlert(null),
+        });
+      }
+    );
   };
 
   return (
@@ -162,7 +209,10 @@ export default function Tournament({ colorMode }) {
               </Button>
             </div>
             {alert && (
-              <Alert severity={alert.severity} onClose={() => setAlert(null)}>
+              <Alert
+                severity={alert.severity}
+                onClose={alert.onClose && alert.onClose}
+              >
                 {alert.message}
               </Alert>
             )}
@@ -170,7 +220,7 @@ export default function Tournament({ colorMode }) {
         </div>
         {allTeams.length > 0 && (
           <div className={styles.teams}>
-            <DataGrid rows={allTeams} columns={columns} />
+            <DataGrid rows={allTeams} columns={columns} getRow />
           </div>
         )}
       </main>
