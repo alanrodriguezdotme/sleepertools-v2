@@ -52,7 +52,7 @@ export default function Tournament({ colorMode }) {
       width: 150,
     },
     {
-      filed: "pointsAgainst",
+      field: "pointsAgainst",
       headerName: "POINTS AGAINST",
       type: "number",
       width: 150,
@@ -127,6 +127,7 @@ export default function Tournament({ colorMode }) {
               });
               if (teams.length === info.total_rosters) {
                 setAllTeams((preAllTeams) => [...preAllTeams, ...teams]);
+                console.log({ teams });
                 setAlert({
                   severity: "success",
                   message: `Successfully added rosters for ${leagueId}`,
