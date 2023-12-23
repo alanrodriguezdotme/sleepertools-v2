@@ -21,7 +21,8 @@ export default function Tournament({ colorMode }) {
 
   useEffect(() => {
     if (router.query.leagues) {
-      const leagues = router.query.leagues.split(",");
+      console.log(router.query.leagues);
+      const leagues = router.query.leagues.split("-");
       setLeagueIds(leagues);
 
       const fetchData = async (id) => {
@@ -29,7 +30,7 @@ export default function Tournament({ colorMode }) {
       };
 
       leagues.forEach((league) => {
-        fetchData(league);
+        !leagueIds.includes(league) && fetchData(league);
       });
     }
   }, [router.query.leagues]);
@@ -61,11 +62,20 @@ export default function Tournament({ colorMode }) {
     { field: "ties", headerName: "T", width: 50, type: "number" },
   ];
 
-  useEffect(() => {
-    console.log({ allTeams });
-  }, [allTeams]);
-
   const getTeams = async (leagueId) => {
+    // check to see if leagueId is already added
+    allTeams.forEach((team) => {
+      console.log(team.leagueId, leagueId);
+      if (team.leagueId === leagueId) {
+        setAlert({
+          severity: "warning",
+          message: `League ${leagueId} is already added`,
+          onClose: () => setAlert(null),
+        });
+        return false;
+      }
+    });
+
     let teams = [];
 
     // get league info, start chain
@@ -103,6 +113,7 @@ export default function Tournament({ colorMode }) {
                 username: user.username,
                 id: leagueId + roster.owner_id,
                 owner_id: roster.owner_id,
+                leagueId,
                 leagueName: leagueName,
                 pointsFor: (fpts + fpts_decimal / 100).toFixed(2),
                 maxPointsFor: (ppts + ppts_decimal / 100).toFixed(2),
@@ -116,6 +127,11 @@ export default function Tournament({ colorMode }) {
               });
               if (teams.length === info.total_rosters) {
                 setAllTeams((preAllTeams) => [...preAllTeams, ...teams]);
+                setAlert({
+                  severity: "success",
+                  message: `Successfully added rosters for ${leagueId}`,
+                  onClose: () => setAlert(null),
+                });
               }
             });
           });
@@ -134,30 +150,47 @@ export default function Tournament({ colorMode }) {
   };
 
   const handleAddLeague = async () => {
-    setAlert({
-      severity: "info",
-      message: `Fetching rosters for ${leagueIdValue}`,
-    });
-    await getLeagueInfo(
-      leagueIdValue,
-      (info) => {
-        setLeagueIds([...leagueIds, leagueIdValue]);
-        setLeagueIdValue("");
-        setAlert(null);
-        router.push({
-          pathname: `/tournament/`,
-          query: { leagues: leagueIds },
-        });
-      },
-      (error) => {
-        console.log({ error });
-        setAlert({
-          severity: "error",
-          message: `Error fetching rosters for ${leagueIdValue}`,
-          onClose: () => setAlert(null),
-        });
-      }
-    );
+    if (leagueIdValue === "") {
+      setAlert({
+        severity: "warning",
+        message: `Please enter a league ID`,
+        onClose: () => setAlert(null),
+      });
+      return false;
+    }
+
+    // check to see if leagueId is already added
+    if (!leagueIds.includes(leagueIdValue)) {
+      setAlert({
+        severity: "info",
+        message: `Fetching rosters for ${leagueIdValue}`,
+      });
+      await getLeagueInfo(
+        leagueIdValue,
+        (info) => {
+          setLeagueIdValue("");
+          setAlert(null);
+          router.push({
+            pathname: `/tournament/`,
+            query: { leagues: [...leagueIds, leagueIdValue].join("-") },
+          });
+        },
+        (error) => {
+          console.log({ error });
+          setAlert({
+            severity: "error",
+            message: `Error fetching rosters for ${leagueIdValue}`,
+            onClose: () => setAlert(null),
+          });
+        }
+      );
+    } else {
+      setAlert({
+        severity: "warning",
+        message: `League ${leagueIdValue} is already added`,
+        onClose: () => setAlert(null),
+      });
+    }
   };
 
   return (
@@ -220,7 +253,13 @@ export default function Tournament({ colorMode }) {
         </div>
         {allTeams.length > 0 && (
           <div className={styles.teams}>
-            <DataGrid rows={allTeams} columns={columns} getRow />
+            <DataGrid
+              rows={allTeams}
+              columns={columns}
+              getRowId={(row) => {
+                return row.id;
+              }}
+            />
           </div>
         )}
       </main>
