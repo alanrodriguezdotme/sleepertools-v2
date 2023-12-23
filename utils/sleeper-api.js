@@ -25,7 +25,7 @@ export async function getUserLeagues(userId, set) {
     });
 }
 
-export async function getLeagueInfo(leagueId, set) {
+export async function getLeagueInfo(leagueId, set, setError) {
   await axios
     .get(`https://api.sleeper.app/v1/league/${leagueId}`)
     .then((res) => {
@@ -34,6 +34,12 @@ export async function getLeagueInfo(leagueId, set) {
       } else {
         return res.data;
       }
+    })
+    .catch((err) => {
+      if (setError) {
+        setError(err);
+      }
+      return err;
     });
 }
 

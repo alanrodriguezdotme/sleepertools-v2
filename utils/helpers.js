@@ -2,7 +2,7 @@ import _ from "lodash";
 
 export function currentYear() {
   const d = new Date();
-  return d.getFullYear() - 1;
+  return d.getFullYear();
 }
 
 export function sortPicks(leagueInfo, trades, teams) {
@@ -84,36 +84,38 @@ export function sortPlayers(team) {
   console.log("... sorting players");
 
   team.forEach((player) => {
-    switch (player.position) {
-      case "QB":
-        QBs.push(player);
-        break;
-      case "RB":
-        RBs.push(player);
-        break;
-      case "WR":
-        WRs.push(player);
-        break;
-      case "TE":
-        TEs.push(player);
-        break;
-      case "K":
-        Ks.push(player);
-        break;
-      case "DEF":
-        DEFs.push(player);
-        break;
-      case "DL":
-        DLs.push(player);
-        break;
-      case "LB":
-        LBs.push(player);
-        break;
-      case "DB":
-        DBs.push(player);
-        break;
-      default:
-        break;
+    if (player) {
+      switch (player.position) {
+        case "QB":
+          QBs.push(player);
+          break;
+        case "RB":
+          RBs.push(player);
+          break;
+        case "WR":
+          WRs.push(player);
+          break;
+        case "TE":
+          TEs.push(player);
+          break;
+        case "K":
+          Ks.push(player);
+          break;
+        case "DEF":
+          DEFs.push(player);
+          break;
+        case "DL":
+          DLs.push(player);
+          break;
+        case "LB":
+          LBs.push(player);
+          break;
+        case "DB":
+          DBs.push(player);
+          break;
+        default:
+          break;
+      }
     }
   });
 
